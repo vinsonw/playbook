@@ -1,0 +1,1 @@
+A learning journal about web development 

@@ -5,6 +5,10 @@ const THREAD_COUNT = navigator.hardwareConcurrency || 4
 
 inputEl.onchange = async (e: any) => {
   const file = e.target.files[0]
+  if (!file) {
+    console.warn('not selecting file')
+    return
+  }
   console.log('start processing:', file)
   const start = Date.now()
   const res = await sliceFile(file)

@@ -5,9 +5,10 @@ export async function createChunk(file:File, index: number , chunkSize: number) 
     const start = index * chunkSize
     const end = start + chunkSize
     const fileReader = new FileReader()
-    const spark = new Spark()
+    // the constructor used here has to match below FileReader.result
+    const spark = new Spark.ArrayBuffer()
     fileReader.onload = (e) => {
-      spark.append(e.target!.result as string)
+      spark.append(e.target!.result as ArrayBuffer)
       resolve({
         start,
         end,

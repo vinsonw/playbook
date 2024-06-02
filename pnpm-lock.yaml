@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  packages/large-file-slice:
+  packages/frontend/large-file-slicing:
     dependencies:
       spark-md5:
         specifier: ^3.0.2

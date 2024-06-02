@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/axios@1.7.2/dist/axios.min.js"></script>
+  <style>
+    div {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <h2>case: url param</h2>
+    <button id="url-param">url-param</button>
+  </div>
+  <div>
+    <h2>case: query string</h2>
+    <button id="query-string">query-string</button>
+  </div>
+  <div>
+    <h2>case: x-www-form-urlencoded</h2>
+    <button id="form-urlencoded">x-www-form-urlencoded</button>
+  </div>
+  <div>
+    <h2>case: json</h2>
+    <button id="json">json</button>
+  </div>
+  <div>
+    <h2>case: multipart/form-data</h2>
+    <label for="upload">upload</label>
+    <input type="file" id="upload" multiple />
+  </div>
+</body>
+<script>
+  /*
+  url param
+  */
+  document.querySelector('#url-param').addEventListener('click', () => {
+    axios.get('api/contact/url-param/123').then(res => console.log('url param res: ', res))
+  })
+
+
+  /*
+   query string
+  */
+  document.querySelector('#query-string').addEventListener('click', () => {
+    axios.get('api/contact/find?name=vinson&age=20').then(res => console.log('url param res: ', res))
+  })
+
+
+  /*
+    x-www-form-urlencoded
+  */
+  document.querySelector('#form-urlencoded')
+    .addEventListener('click', sendUrlEncoded)
+  function sendUrlEncoded() {
+    // console.log('sendUrlEncoded', axios, Qs)
+    axios.post('/api/contact/url-encoded', ({
+      name: 'vinson',
+      age: 20
+    }), {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      }
+    }).then(res => {
+      console.log('res', res)
+    })
+  }
+
+
+
+  /*
+   json
+  */
+  document.querySelector('#json')
+    .addEventListener('click', sendUrlEncoded)
+  function sendUrlEncoded() {
+    // console.log('sendUrlEncoded', axios, Qs)
+    axios.post('/api/contact/json', ({
+      name: 'jason',
+      age: 20
+    }), {
+      headers: {
+        'content-type': 'application/json'
+      }
+    }).then(res => {
+      console.log('json res', res)
+    })
+  }
+
+
+  /*
+    multipart/form-data
+  */
+  const inputEl = document.querySelector('input[type=file]')
+  // document.querySelector('#multipart-form-data')
+  inputEl.addEventListener('change', () => {
+    const data = new FormData()
+    data.set('name', 'vinson')
+    data.set('age', 18)
+    // data.set('file1', inputEl.files[0])
+    // data.set('file2', inputEl.files[1])
+    for (let i = 0; i < inputEl.files.length; i++) {
+      data.set('file' + i, inputEl.files[0])
+    }
+    axios.post('/api/contact/upload', data, {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    }).then(res => {
+      console.log('upload res: ', res)
+    })
+  })
+</script>
+
+</html>

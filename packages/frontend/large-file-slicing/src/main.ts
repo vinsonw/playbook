@@ -9,11 +9,25 @@ const CHUNK_SIZE = 1024 * 1024 * 5
 const THREAD_COUNT = navigator.hardwareConcurrency || 4
 
 slicingInputEl.onchange = async (e: any) => {
-  const file = e.target.files[0]
+  const file = e.target.files[0] as File
   if (!file) {
     console.warn("not selecting file")
     return
   }
+
+  // Strategy 1: whole uploading
+  if (file.size < 1024 * 1024 * 5) {
+    const data = new FormData()
+    data.set("uploadStrategy", "whole")
+    data.set("name", `${file.name}`)
+    data.append("file", file)
+    const wholeUploadRes = await axios.post("/api/contact/upload", data)
+    console.log("wholeUploadRes", wholeUploadRes)
+    return
+  }
+
+  // Strategy 2: slice and upload
+  // slicing
   console.log("start processing:", file)
   const start = Date.now()
   const chunkList = await sliceFile(file)
@@ -23,8 +37,11 @@ slicingInputEl.onchange = async (e: any) => {
     ` ${THREAD_COUNT} workers used`
   )
   console.log("1. slicing res:", chunkList)
+
+  // upload
   const taskList = chunkList.map((chunk) => {
     const data = new FormData()
+    data.set("uploadStrategy", "slice-and-merge")
     data.set("name", `${chunk.name}`)
     data.set("index", `${chunk.index}`)
     data.append("file", chunk.slice)

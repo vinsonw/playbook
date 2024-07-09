@@ -28,7 +28,7 @@ export class ContactController {
   @Post('upload')
   @UseInterceptors(
     AnyFilesInterceptor({
-      dest: 'upload-results/',
+      dest: UPLOAD_ROOT_DIR,
     }),
   )
   async handleUploadFile(
@@ -37,13 +37,29 @@ export class ContactController {
     @UploadedFiles() fileList: Array<Express.Multer.File>,
   ) {
     console.log('body', body);
+    const { uploadStrategy = 'whole' } = body;
+    console.log('[handleUploadFile] uploadStrategy', uploadStrategy);
     console.log('[handleUploadFile] got fileList', fileList);
-    const fileName = body.name;
-    const destFileFolder = 'upload-results/chunks_' + fileName;
-    await fsp.mkdir(destFileFolder, { recursive: true });
-    await fsp.copyFile(fileList[0].path, destFileFolder + '/' + body.index);
-    await fsp.unlink(fileList[0].path);
-    return body;
+    switch (uploadStrategy) {
+      case 'slice-and-merge': {
+        const fileName = body.name;
+        const destFileFolder = `${UPLOAD_ROOT_DIR}/chunks_` + fileName;
+        const destFilePath = `${destFileFolder}` + '/' + body.index;
+        await fsp.mkdir(destFileFolder, { recursive: true });
+        await fsp.copyFile(fileList[0].path, destFilePath);
+        await fsp.unlink(fileList[0].path);
+        return body;
+      }
+      case 'whole': {
+        const fileName = body.name;
+        const destFileFolder = UPLOAD_ROOT_DIR;
+        const destFilePath = `${UPLOAD_ROOT_DIR}/` + fileName;
+        await fsp.mkdir(destFileFolder, { recursive: true });
+        await fsp.copyFile(fileList[0].path, destFilePath);
+        await fsp.unlink(fileList[0].path);
+        break;
+      }
+    }
   }
 
   @Get('merge')
@@ -59,7 +75,7 @@ export class ContactController {
     let startPos = 0;
     files.map((file) => {
       const filePath = chunkDir + '/' + file;
-      // for every slice file, create a read stream then pipe into the same
+      // for every file slice, create a read stream then pipe into the same
       // write stream with different start position
       const readStream = fs.createReadStream(filePath);
       readStream
@@ -72,7 +88,7 @@ export class ContactController {
           count++;
           if (count === files.length) {
             fs.rm(chunkDir, { recursive: true }, () => {
-              console.log('merging finished, delete chunk folder');
+              console.log('merging finished, chunk folder deleted');
             });
           }
         });

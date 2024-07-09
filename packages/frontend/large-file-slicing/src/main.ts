@@ -105,12 +105,12 @@ async function sliceFile(file: File): Promise<ChunkList> {
   */
 const inputEl = document.querySelector("#upload") as HTMLInputElement
 inputEl.addEventListener("change", () => {
-  if (!inputEl.files) return
+  if (!inputEl.files?.length) return
   const data = new FormData()
-  data.set("name", "vinson")
-  data.set("age", "18")
+  // data.set("name", "vinson")
+  // data.set("age", "18")
   for (let i = 0; i < inputEl.files.length; i++) {
-    data.set("file" + i, inputEl.files[0])
+    data.set("file" + i, inputEl.files[i])
   }
   axios
     .post("/api/contact/upload", data, {

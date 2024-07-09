@@ -36,28 +36,36 @@ export class ContactController {
     // !this has an `s` at the end, or you will be sorry
     @UploadedFiles() fileList: Array<Express.Multer.File>,
   ) {
-    console.log('body', body);
+    console.log('[handleUploadFile] body', body);
     const { uploadStrategy = 'whole' } = body;
     console.log('[handleUploadFile] uploadStrategy', uploadStrategy);
     console.log('[handleUploadFile] got fileList', fileList);
-    switch (uploadStrategy) {
-      case 'slice-and-merge': {
-        const fileName = body.name;
-        const destFileFolder = `${UPLOAD_ROOT_DIR}/chunks_` + fileName;
-        const destFilePath = `${destFileFolder}` + '/' + body.index;
-        await fsp.mkdir(destFileFolder, { recursive: true });
-        await fsp.copyFile(fileList[0].path, destFilePath);
-        await fsp.unlink(fileList[0].path);
-        return body;
-      }
-      case 'whole': {
-        const fileName = body.name;
-        const destFileFolder = UPLOAD_ROOT_DIR;
-        const destFilePath = `${UPLOAD_ROOT_DIR}/` + fileName;
-        await fsp.mkdir(destFileFolder, { recursive: true });
-        await fsp.copyFile(fileList[0].path, destFilePath);
-        await fsp.unlink(fileList[0].path);
-        break;
+
+    for (const file of fileList) {
+      switch (uploadStrategy) {
+        case 'slice-and-merge': {
+          const fileName = body.name;
+          const destFileFolder = `${UPLOAD_ROOT_DIR}/chunks_${fileName}`;
+          const destFilePath = `${destFileFolder}/${body.index}`;
+          await fsp.mkdir(destFileFolder, { recursive: true });
+          await fsp.copyFile(file.path, destFilePath);
+          await fsp.unlink(file.path);
+          return body;
+        }
+        case 'whole': {
+          // console.log('whole file', file);
+          const fileName = body.name || file.originalname;
+          const destFileFolder = UPLOAD_ROOT_DIR;
+          const destFilePath = `${UPLOAD_ROOT_DIR}/${fileName}`;
+          // console.log('destFilePath', destFilePath)
+          await fsp.mkdir(destFileFolder, { recursive: true });
+          await fsp.copyFile(file.path, destFilePath);
+          await fsp.unlink(file.path);
+          break;
+        }
+        default: {
+          throw new Error('Unrecognized update strategy:' + uploadStrategy);
+        }
       }
     }
   }

@@ -1,50 +1,57 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
-    <style>
-      body {
-        overflow: hidden;
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + TS</title>
+  <style>
+    body {
+      overflow: hidden;
+    }
+
+    @keyframes rotate {
+      from {
+        left: 0px;
       }
-      @keyframes rotate {
-        from {
-          left: 0px;
-        }
-        to {
-          /* transform: rotate(360deg) */
-          left: 100%;
-        }       
+
+      to {
+        /* transform: rotate(360deg) */
+        left: 100%;
       }
-      .indicator {
-        position:absolute;
-        top: 5px;
-        width: 50px;
-        height: 6px;
-        background-color: lightcoral;
-        animation: rotate 3s linear infinite;
-      }
-      .app {
-        margin-top: 100px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="indicator"></div>
-    <div class="app">
-    <h2>large file slicing</h2>
-      <input id="slicing-upload" type="file" />
-    </div>
+    }
+
+    .indicator {
+      position: absolute;
+      top: 5px;
+      width: 50px;
+      height: 6px;
+      background-color: lightcoral;
+      animation: rotate 3s linear infinite;
+    }
+
+    .app {
+      margin-top: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="indicator"></div>
+  <div class="app">
+    <h2>case: one large file slicing & upload</h2>
+    <input id="slicing-upload" type="file" />
+  </div>
   <div>
-    <h2>case: multipart/form-data</h2>
+    <h2>case: upload multiple files in one request</h2>
     <label for="upload">upload</label>
     <input type="file" id="upload" multiple />
   </div>
 
   <script>
-</script>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+  </script>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>

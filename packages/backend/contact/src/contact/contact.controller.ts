@@ -1,3 +1,6 @@
+import fsp from 'fs/promises';
+import fs from 'fs';
+
 import {
   Controller,
   Get,
@@ -16,6 +19,8 @@ import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
+const UPLOAD_ROOT_DIR = 'upload-results';
+
 @Controller('api/contact')
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
@@ -26,13 +31,53 @@ export class ContactController {
       dest: 'upload-results/',
     }),
   )
-  handleUploadFile(
-    @Body() createContactDto: CreateContactDto,
+  async handleUploadFile(
+    @Body() body: CreateContactDto,
     // !this has an `s` at the end, or you will be sorry
     @UploadedFiles() fileList: Array<Express.Multer.File>,
   ) {
+    console.log('body', body);
     console.log('[handleUploadFile] got fileList', fileList);
-    return `received: ${JSON.stringify(createContactDto)}`;
+    const fileName = body.name;
+    const destFileFolder = 'upload-results/chunks_' + fileName;
+    await fsp.mkdir(destFileFolder, { recursive: true });
+    await fsp.copyFile(fileList[0].path, destFileFolder + '/' + body.index);
+    await fsp.unlink(fileList[0].path);
+    return body;
+  }
+
+  @Get('merge')
+  merge(@Query('name') name: string) {
+    const chunkDir = `${UPLOAD_ROOT_DIR}/chunks_` + name;
+    const files = fs.readdirSync(chunkDir).sort((a, b) => {
+      const aNum = parseInt(a);
+      const bNum = parseInt(b);
+      return aNum - bNum;
+    });
+
+    let count = 0;
+    let startPos = 0;
+    files.map((file) => {
+      const filePath = chunkDir + '/' + file;
+      // for every slice file, create a read stream then pipe into the same
+      // write stream with different start position
+      const readStream = fs.createReadStream(filePath);
+      readStream
+        .pipe(
+          fs.createWriteStream(UPLOAD_ROOT_DIR + '/' + name, {
+            start: startPos,
+          }),
+        )
+        .on('finish', () => {
+          count++;
+          if (count === files.length) {
+            fs.rm(chunkDir, { recursive: true }, () => {
+              console.log('merging finished, delete chunk folder');
+            });
+          }
+        });
+      startPos += fs.statSync(filePath).size;
+    });
   }
 
   // parse form-urlencoded data from the body

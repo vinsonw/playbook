@@ -34,8 +34,17 @@
   <body>
     <div class="indicator"></div>
     <div class="app">
-      <input type="file" />
+    <h2>large file slicing</h2>
+      <input id="slicing-upload" type="file" />
     </div>
+  <div>
+    <h2>case: multipart/form-data</h2>
+    <label for="upload">upload</label>
+    <input type="file" id="upload" multiple />
+  </div>
+
+  <script>
+</script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

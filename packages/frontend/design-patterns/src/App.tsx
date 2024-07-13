@@ -15,6 +15,9 @@ export function App() {
         <li>
           <Link to="/patterns/proxy">Proxy</Link>
         </li>
+        <li>
+          <Link to="/patterns/iterator">Iterator</Link>
+        </li>
       </ul>
     </>
   )

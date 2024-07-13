@@ -32,6 +32,13 @@ export const routes: RouteObject[] = [
           return { Component: Proxy }
         },
       },
+      {
+        path: "iterator",
+        lazy: async () => {
+          const { Iterator } = await import("../patterns/Iterator/Iterator.tsx")
+          return { Component: Iterator }
+        },
+      },
     ],
   },
 ]

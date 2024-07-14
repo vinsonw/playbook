@@ -1,4 +1,4 @@
-import { User } from "../entities";
+import { User } from "../entities"
 
 const UserAccount = ({ user }: { user: User }) => {
   return (
@@ -9,7 +9,7 @@ const UserAccount = ({ user }: { user: User }) => {
         <strong>Name:</strong> {user.name}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default UserAccount;
+export default UserAccount

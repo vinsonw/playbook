@@ -36,13 +36,13 @@
       "id": 4,
       "name": "Tablet",
       "price": 349,
-      "categoryId": 2
+      "categoryId": 3
     },
     {
       "id": 5,
       "name": "Smartwatch",
       "price": 199,
-      "categoryId": 1
+      "categoryId": 3
     },
     {
       "id": 6,

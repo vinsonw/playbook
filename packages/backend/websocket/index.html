@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+
+<body>
+
+    <div>
+        <button>send data</button>
+    </div>
+    <script>
+        const ws = new WebSocket("ws://localhost:8080");
+
+        ws.onopen = function () {
+            console.log('ws opened.')
+        };
+
+        ws.onmessage = function (evt) {
+            console.log(evt)
+        };
+
+        ws.onclose = function () {
+        };
+
+        const button = document.querySelector('button')
+        button.addEventListener('click', () => {
+            ws.send('send from browser...')
+        })
+    </script>
+</body>
+
+</html>

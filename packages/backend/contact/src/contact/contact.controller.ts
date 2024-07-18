@@ -13,6 +13,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
@@ -129,8 +130,9 @@ export class ContactController {
 
   // parse url param
   @Get('url-param/:id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseIntPipe()) id: number) {
     // return this.contactService.findOne(+id);
+    console.log('id', id + 1);
     return `received: id=${id}`;
   }
 

@@ -20,7 +20,7 @@ describe("ExpandableText", () => {
     expect(button).not.toBeInTheDocument()
   })
 
-  it("should render truncated text when the length of text is more than the limit", async () => {
+  it("should render truncated text when the length of text is more than the limit", () => {
     render(<ExpandableText text={longText} />)
     expect(screen.getByText(truncatedText)).toBeInTheDocument()
 
@@ -39,5 +39,9 @@ describe("ExpandableText", () => {
     await user.click(button)
     expect(button).toHaveTextContent(/show less/i)
     expect(screen.getByText(longText)).toBeInTheDocument()
+
+    await user.click(button)
+    expect(button).toHaveTextContent(/show more/i)
+    expect(screen.getByText(truncatedText)).toBeInTheDocument()
   })
 })

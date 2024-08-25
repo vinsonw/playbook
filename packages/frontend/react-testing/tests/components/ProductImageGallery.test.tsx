@@ -11,7 +11,7 @@ describe("ProductImageGallery", () => {
     const imgUrls = ["url1", "url2"]
     render(<ProductImageGallery imageUrls={imgUrls} />)
     const imgs = screen.getAllByRole("img")
-    expect(imgs).toHaveLength(2)
+    expect(imgs).toHaveLength(imgUrls.length)
     imgs.forEach((img, index) => {
       expect(img).toHaveAttribute("src", imgUrls[index])
     })

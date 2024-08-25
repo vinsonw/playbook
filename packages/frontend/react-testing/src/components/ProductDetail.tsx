@@ -1,32 +1,30 @@
-import { useEffect, useState } from "react";
-import { Product } from "../entities";
+import { useEffect, useState } from "react"
+import { Product } from "../entities"
 
 const ProductDetail = ({ productId }: { productId: number }) => {
-  const [product, setProduct] = useState<Product | undefined>(
-    undefined
-  );
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [product, setProduct] = useState<Product | undefined>(undefined)
+  const [isLoading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   useEffect(() => {
     if (!productId) {
-      setError("Invalid ProductId");
-      return;
+      setError("Invalid ProductId")
+      return
     }
 
-    setLoading(true);
+    setLoading(true)
     fetch("/products/" + productId)
       .then((res) => res.json())
       .then((data) => setProduct(data))
       .catch((err) => setError((err as Error).message))
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => setLoading(false))
+  }, [])
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>
 
-  if (error) return <div>Error: {error}</div>;
+  if (error) return <div>Error: {error}</div>
 
-  if (!product) return <div>The given product was not found.</div>;
+  if (!product) return <div>The given product was not found.</div>
 
   return (
     <div>
@@ -34,7 +32,7 @@ const ProductDetail = ({ productId }: { productId: number }) => {
       <div>Name: {product.name}</div>
       <div>Price: ${product.price}</div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductDetail;
+export default ProductDetail

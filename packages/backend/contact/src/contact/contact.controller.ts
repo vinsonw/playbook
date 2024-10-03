@@ -45,8 +45,7 @@ export class ContactController {
     for (const file of fileList) {
       switch (uploadStrategy) {
         case 'slice-and-merge': {
-          const fileName = body.name;
-          const destFileFolder = `${UPLOAD_ROOT_DIR}/chunks_${fileName}`;
+          const destFileFolder = `${UPLOAD_ROOT_DIR}/chunks_${body.name}`;
           const destFilePath = `${destFileFolder}/${body.index}`;
           await fsp.mkdir(destFileFolder, { recursive: true });
           await fsp.copyFile(file.path, destFilePath);
@@ -55,11 +54,11 @@ export class ContactController {
         }
         case 'whole': {
           // console.log('whole file', file);
-          const fileName = body.name || file.originalname;
-          const destFileFolder = UPLOAD_ROOT_DIR;
-          const destFilePath = `${UPLOAD_ROOT_DIR}/${fileName}`;
-          // console.log('destFilePath', destFilePath)
-          await fsp.mkdir(destFileFolder, { recursive: true });
+          const originalFilenameInUtf8 = Buffer.from(
+            file.originalname,
+            'latin1',
+          ).toString('utf-8');
+          const destFilePath = `${UPLOAD_ROOT_DIR}/${originalFilenameInUtf8}`;
           await fsp.copyFile(file.path, destFilePath);
           await fsp.unlink(file.path);
           break;

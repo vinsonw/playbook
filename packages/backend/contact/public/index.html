@@ -106,7 +106,7 @@
     // data.set('file1', inputEl.files[0])
     // data.set('file2', inputEl.files[1])
     for (let i = 0; i < inputEl.files.length; i++) {
-      data.set('file' + i, inputEl.files[0])
+      data.set('file' + i, inputEl.files[i])
     }
     axios.post('/api/contact/upload', data, {
       headers: {

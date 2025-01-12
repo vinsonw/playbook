@@ -4,3 +4,6 @@
 [submodule "projects/rrd-tutorial-1"]
 	path = projects/rrd-tutorial
 	url = https://github.com/vinsonw/rrd-tutorial.git
+[submodule "projects/neetcode"]
+	path = projects/neetcode
+	url = git@github.com:vinsonw/neetcode.git

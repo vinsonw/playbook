@@ -2,5 +2,5 @@
 	path = projects/nestjs-meeting-management
 	url = https://github.com/vinsonw/nestjs-meeting-management.git
 [submodule "projects/rrd-tutorial-1"]
-	path = projects/rrd-tutorial-1
+	path = projects/rrd-tutorial
 	url = https://github.com/vinsonw/rrd-tutorial.git

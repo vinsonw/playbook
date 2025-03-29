@@ -7,3 +7,6 @@
 [submodule "projects/neetcode"]
 	path = projects/neetcode
 	url = git@github.com:vinsonw/neetcode.git
+[submodule "projects/react-testing"]
+	path = projects/react-testing
+	url = git@github.com:vinsonw/react-testing.git
